@@ -1,7 +1,5 @@
-import csv
 import predict
 import team
-import copy
 import mysql.connector
 import datetime
 
@@ -15,7 +13,7 @@ mydb = mysql.connector.connect(
 
 YEAR = 2017
 
-mycursor = mydb.cursor()
+mycursor = mydb.cursor(buffered=True)
 def importGames():
     #we need to check if the table for this season exists
     sql = "SELECT count(*) FROM information_schema.TABLES WHERE (TABLE_SCHEMA = 'test') AND (TABLE_NAME = 'bb" + str(YEAR) + "')"
@@ -280,15 +278,12 @@ def getGamesOnDate(date):
 #we have a small penalty for teams playing b2b road games
 def checkB2B(date, currTeam):
     check = date - datetime.timedelta(days = 1)
-    command = "SELECT count(*) FROM bb" + str(YEAR) + " WHERE Date = '" + check.strftime("%Y-%m-%d") + "' and Team = '" + currTeam + "' and HA = '@'"
+    command = "SELECT * FROM bb" + str(YEAR) + " WHERE Date = '" + check.strftime("%Y-%m-%d") + "' and Team = '" + currTeam + "' and HA = '@'"
     mycursor.execute(command)
-    for x in mycursor:
-        if x[0]>0:
-            command = "SELECT * FROM bb" + str(YEAR) + " WHERE Date = '" + check.strftime("%Y-%m-%d") + "' and Team = '" + currTeam + "' and HA = '@'"
-            mycursor.execute(command)
-            myresult = mycursor.fetchall()
-            return myresult
+    if mycursor.rowcount == 0:
         return False
+    myresult = mycursor.fetchall()
+    return myresult
 
 #test accuracy of predictions using a given set of dates
 def backtest(games, tDict, dates, n):

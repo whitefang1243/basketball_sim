@@ -48,7 +48,8 @@ def h2hRuns(teamA: team.Team, teamB: team.Team):
     return [goalsA, goalsB]  
 
 #same as above, but taking home advantage into account, with teamB being home
-def h2hHFA(teamA: team.Team, teamB: team.Team, isB2B):
+#also now takes b2b road games into account
+def h2hHFA(teamA: team.Team, teamB: team.Team, isB2B = False):
     if isB2B:
         mod = 0.75
     else:
@@ -72,43 +73,6 @@ def h2hVerify(teamAGoals, teamBGoals):
     if goalsA>goalsB:
         return 1
     return -1
-
-def test():
-    teamA = team.Team("Man City", 26, 4, 4, 89, 31)
-    teamB = team.Team("Arsenal", 25, 6, 4, 83, 39)  
-    
-    print(pythRecord(teamA.GF, teamA.GA))
-    print(pythRecord(teamB.GF, teamB.GA))
-    
-    win = 0
-    draw = 0
-    loss = 0
-    
-    for i in range (0,1000):
-        result = h2h(teamA, teamB)
-        if result==1:
-            win+=1
-        elif result==-1:
-            loss+=1
-        else:
-            draw+=1
-    print (win, draw, loss)
-    
-    win = 0
-    draw = 0
-    loss = 0
-
-    for i in range (0,1000):
-        result = h2hV2(teamA, teamB)
-        if result==1:
-            win+=1
-        elif result==-1:
-            loss+=1
-        else:
-            draw+=1
-    print (win, draw, loss)    
-    
-#test()
     
     
     
