@@ -175,7 +175,7 @@ def handleScheduleWithDate(games,tDict, unfinished, date):
         tDict[teamB].update(True)   
 
 
-
+#simulate one game
 def oneGame(games, tDict, n, a, b, debug):
     handleSchedule(games,tDict, [])     #we don't need the unfinished games thing, so just leave it like this
 
@@ -234,7 +234,7 @@ def oneGame(games, tDict, n, a, b, debug):
     print(res)
     return [avgRuns, winLoss]
     
-
+#testing home field advantage
 def checkHome(startYear, endYear):
     points = [0,0]
     wins = [0,0]
@@ -270,25 +270,27 @@ def checkHome(startYear, endYear):
     print(points[0]/counter, points[1]/counter)
     print(wins)
     print(wins[0]/counter, wins[1]/counter)
-    
+
+#returns games on a specific date
 def getGamesOnDate(date):
     command = "SELECT * FROM bb" + str(YEAR) + " WHERE Date = '" + date + "'"
     mycursor.execute(command)
     return mycursor.fetchall()    
 
-def checkB2B(date, team):
+#we have a small penalty for teams playing b2b road games
+def checkB2B(date, currTeam):
     check = date - datetime.timedelta(days = 1)
-    command = "SELECT count(*) FROM bb" + str(YEAR) + " WHERE Date = '" + check.strftime("%Y-%m-%d") + "' and Team = '" + team + "' and HA = '@'"
+    command = "SELECT count(*) FROM bb" + str(YEAR) + " WHERE Date = '" + check.strftime("%Y-%m-%d") + "' and Team = '" + currTeam + "' and HA = '@'"
     mycursor.execute(command)
     for x in mycursor:
         if x[0]>0:
-            command = "SELECT * FROM bb" + str(YEAR) + " WHERE Date = '" + check.strftime("%Y-%m-%d") + "' and Team = '" + team + "' and HA = '@'"
+            command = "SELECT * FROM bb" + str(YEAR) + " WHERE Date = '" + check.strftime("%Y-%m-%d") + "' and Team = '" + currTeam + "' and HA = '@'"
             mycursor.execute(command)
             myresult = mycursor.fetchall()
             return myresult
         return False
 
-
+#test accuracy of predictions using a given set of dates
 def backtest(games, tDict, dates, n):
     avgSpread = 0
     avgRealSpread = 0
@@ -355,6 +357,7 @@ def backtest(games, tDict, dates, n):
     print("Games Played: ", totalGames)
 
 #oneGame(importGames(), initializeTeams(), 500, "TOR", "NOP", False)
+#debugging/test stuff, can safely ignore
 dateArr = []
 for i in range(1, 32):
     dateArr.append(datetime.datetime(YEAR-1, 12, i, 0, 0))
@@ -363,9 +366,10 @@ for i in range(1, 32):
 for i in range(1, 29):
     dateArr.append(datetime.datetime(YEAR, 1, i, 0, 0))
 backtest(importGames(), initializeTeams(), dateArr, 300)
+#end of debugging stuff
 #checkHome(2022,2024)
 
-
+#test effects of b2b road games
 def b2b(games, tDict, dates):
     allGames = [0,0]
     totalGames = 0
@@ -380,7 +384,7 @@ def b2b(games, tDict, dates):
             if curr[2] != "@":
                 continue
             previous = checkB2B(date, curr[-2])
-            if (previous!=False):
+            if previous!=False:
                 allGames[0] += curr[6]
                 allGames[1] += curr[5]
                 totalGames += 1
