@@ -42,7 +42,15 @@ for x in mycursor:
         mydb.commit()
 
 #blank the table before loading new stuff
-#TODO: add a way to backup this table before deleting it
+sql = "DROP TABLE IF EXISTS bb"+str(YEAR) + "_old"
+mycursor.execute(sql)
+
+sql = "CREATE TABLE bb" + str(YEAR) + "_old LIKE bb" + str(YEAR)
+mycursor.execute(sql)
+
+sql = "INSERT INTO bb" + str(YEAR) + "_old SELECT * FROM bb" + str(YEAR)
+mycursor.execute(sql)
+
 arr = basketball_test.main(YEAR, True)                   #we do the scrape before the delete just in case
 sql = "DELETE FROM `bb" + str(YEAR) + "`"
 mycursor.execute(sql)

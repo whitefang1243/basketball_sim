@@ -1,21 +1,5 @@
 class Team:
-    def __init__(self, name, wins, ties, losses, GF, GA):
-        self.name = name
-        self.wins = wins
-        self.ties = ties
-        self.losses = losses
-        self.GA = GA
-        self.GF = GF
-        self.games = wins + losses + ties
-        self.points = wins*3 + ties
-        self.position = 0
-        self.UCL = 0
-        self.rel = 0
-        self.best = 31
-        self.worst = 0
-        self.tWins = 0
-        self.tLoss = 0
-        
+
     def __init__(self, name, wins, ties, losses, GF, GA, league, division, alias):
         self.name = name
         self.wins = wins

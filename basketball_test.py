@@ -1,5 +1,4 @@
 import basketball_scraper
-import numpy as np
 import time
 
 DELAY = 10

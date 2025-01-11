@@ -11,7 +11,7 @@ mydb = mysql.connector.connect(
     database = "test"
 )
 
-YEAR = 2017
+YEAR = 2024
 
 mycursor = mydb.cursor(buffered=True)
 def importGames():
@@ -360,7 +360,7 @@ for i in range(1, 32):
     dateArr.append(datetime.datetime(YEAR, 1, i, 0, 0))
 for i in range(1, 29):
     dateArr.append(datetime.datetime(YEAR, 1, i, 0, 0))
-backtest(importGames(), initializeTeams(), dateArr, 300)
+#backtest(importGames(), initializeTeams(), dateArr, 300)
 #end of debugging stuff
 #checkHome(2022,2024)
 
@@ -379,7 +379,7 @@ def b2b(games, tDict, dates):
             if curr[2] != "@":
                 continue
             previous = checkB2B(date, curr[-2])
-            if previous!=False:
+            if previous:
                 allGames[0] += curr[6]
                 allGames[1] += curr[5]
                 totalGames += 1
@@ -392,7 +392,8 @@ def b2b(games, tDict, dates):
                 print(previous[0][5], previous[0][6])
                 print(curr[5], curr[6])
                 print ("\n")
-                
+
+    print("Games Played: ", totalGames)
     print("Average Real Spread: ", (allGames[1]-allGames[0])/totalGames)
     print("Average Score: ", allGames[1]/totalGames, allGames[0]/totalGames)
     print("Home Win Rate: ", wins/totalGames)
@@ -401,4 +402,4 @@ def b2b(games, tDict, dates):
     print("Previous Home Win Rate: ", nWins/totalGames)    
     
     
-#b2b(importGames(), initializeTeams(), dateArr)
+b2b(importGames(), initializeTeams(), dateArr)
