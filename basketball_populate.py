@@ -8,15 +8,12 @@ CURRENT = 2025              #current year
 teams = ['ATL', 'BOS', 'CHO', 'CHI','CLE','DAL', 'DEN', 'DET', 'GSW', 'HOU', 'IND', 'LAC', 'LAL', 'MEM', 'MIA', 'MIL', 'MIN', 'NOP',
          'NYK', 'BRK', 'OKC', 'ORL', 'PHI', 'PHO', 'POR', 'SAC', 'SAS', 'TOR', 'UTA', 'WAS']
 
-
-
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
   password="Aa531491",
   database = "test"
 )
-
 
 mycursor = mydb.cursor()
 
@@ -33,9 +30,6 @@ for x in mycursor:
             if count>0:                                     #if populated, kill the program 
                 print("Season has already been loaded, terminating program")    #TODO:  add a way to override this whole check
                 exit()
-        sql = "DELETE FROM `bb" + str(YEAR) + "`"
-        mycursor.execute(sql)
-        mydb.commit()
     else:                                                   #if table does not exist, create table based on bb2025 (current season)
         sql = "CREATE TABLE bb" + str(YEAR) + " LIKE bb2025"
         mycursor.execute(sql)
@@ -50,6 +44,8 @@ mycursor.execute(sql)
 
 sql = "INSERT INTO bb" + str(YEAR) + "_old SELECT * FROM bb" + str(YEAR)
 mycursor.execute(sql)
+mydb.commit()
+
 
 arr = basketball_test.main(YEAR, True)                   #we do the scrape before the delete just in case
 sql = "DELETE FROM `bb" + str(YEAR) + "`"
@@ -80,7 +76,6 @@ for i in range(0, len(arr)):
             val = (arr[i][j][0], arr[i][j][1], arr[i][j][3], arr[i][j][4], arr[i][j][6], int(arr[i][j][7]), int(arr[i][j][8]), arr[i][j][14], j, arr[i][j][-1], streak)
         mycursor.execute(sql, val)
         mydb.commit()
-
 
 #this is just here to verify if everything is correct
 for i in range(0, len(teams)):
